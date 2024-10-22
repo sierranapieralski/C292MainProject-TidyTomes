@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7647734246545076235}
   m_Layer: 0
   m_Name: MovingGreenBook3
-  m_TagString: Untagged
+  m_TagString: MoveBook
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
