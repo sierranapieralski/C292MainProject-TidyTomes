@@ -6,6 +6,7 @@ public class Outline : MonoBehaviour
 {
 
     [SerializeField] string color;
+    [SerializeField] GameManager manager;
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +35,7 @@ public class Outline : MonoBehaviour
                 collision.gameObject.GetComponent<Book>().snapBook();
                 // move book to correct position
                 collision.gameObject.transform.position = transform.position;
+                GameManager.instance.IncreaseScore(1);
 
             }
         }
