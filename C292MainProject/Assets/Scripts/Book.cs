@@ -15,6 +15,14 @@ public class Book : MonoBehaviour
     [SerializeField] bool isDraggable = false;
 
 
+    // new
+    bool shouldFall = false;
+    bool isSnapped = false;
+    float fallSpeed = 5f; 
+    float fallTime = 2f;  // time in seconds for the book to fall before respawning
+    float fallTimer = 0f; // timer to track the fall time of the book
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,33 +32,35 @@ public class Book : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        // new
         if (isDragging)
         {
             Vector3 convertedPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             transform.position = new Vector3(convertedPosition.x, convertedPosition.y, 0);
         }
+        else if (shouldFall && !isSnapped)
+        {
+            transform.position += Vector3.down * fallSpeed * Time.deltaTime;   // make the book fall off the screen
+
+            fallTimer += Time.deltaTime;    // increast fall time
+
+            // check if the fall time has passed
+            if (fallTimer >= fallTime)
+            {
+                // reset variables about book
+                shouldFall = false;
+                fallTimer = 0f;
+                transform.position = initialPosition;
+                isDraggable = true; // draggable is true after respawn
+            }
+        }
 
     }
 
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    Debug.Log("In Book file on trigger enter 2d function");
-    //    Debug.Log("Collision detected with: " + collision.gameObject.name);
-
-    //    if (collision.gameObject.tag == "EmptyBookSlot")   // If the player moves found book to collide with correct book outline,
-    //                                                       // place book in correct shelf spot, delete the outline and book so cant
-    //                                                       // be moved again, and increase player score of total books found
-    //    {
-    //        Debug.Log("Player moved book to empty book slot on shelf!");
-    //        //collision.gameObject.GetComponent<Player>().GrantImmunity(immunityDuration);
-    //        //Destroy(gameObject);  // Remove the book and book slot from the game after it's collected
-    //    }
-        
-    //}
-
     private void OnMouseDown()
     {
-        if (isDraggable)
+       if (isDraggable)
         {
             isDragging = true;
         }
@@ -59,6 +69,13 @@ public class Book : MonoBehaviour
     private void OnMouseUp()
     {
         isDragging = false;
+
+        // new
+        if (!isSnapped)     
+        {
+            shouldFall = true;
+            fallTimer = 0f;  // reset the timer when the fall starts
+        }
     }
 
     public void snapBook() 
@@ -67,5 +84,12 @@ public class Book : MonoBehaviour
         isDragging = false;
         isDraggable = false;
 
+
+        // new
+        shouldFall = false;
+        isSnapped = true;
+        fallTimer = 0f;  // stop any ongoing fall and reset the timer
+
     }
+
 }
