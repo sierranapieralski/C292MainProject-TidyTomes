@@ -8,6 +8,8 @@ public class Outline : MonoBehaviour
     [SerializeField] string color;
     [SerializeField] GameManager manager;
 
+    // add int for orientation 0, 90, 180, 270 to match rotation which the if will check if the boot itself matches
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +31,7 @@ public class Outline : MonoBehaviour
             if (collision.gameObject.GetComponent<Book>().color == color)
             {
                 Debug.Log("matched color!");
+
                 // can check rotation
 
                 // take book and snap to match outlines position, when it gets moved over outline, snaps to shelf
