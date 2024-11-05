@@ -23,8 +23,7 @@ public class Book : MonoBehaviour
     float fallTimer = 0f; // timer to track the fall time of the book
 
 
-    // add int for orientation 0, 90, 180, 270 to match rotation
-    int rotationState = 0;  // tracks degrees of rotation of book
+    int rotationState = 0;  // tracks degrees of rotation of book (0, 90, 180, 270)
 
 
     // Start is called before the first frame update
@@ -38,7 +37,6 @@ public class Book : MonoBehaviour
     void Update()
     {
 
-        // Rotate only if the book is currently being dragged
         if (isDragging)
         {
             if (Input.GetKeyDown(KeyCode.RightArrow)) // Rotate 90 degrees clockwise
