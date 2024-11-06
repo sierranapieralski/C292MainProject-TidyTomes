@@ -23,10 +23,9 @@ public class GameManager : MonoBehaviour
     private int booksFound = 0;
     private float startTime;
     private bool levelCompleted = false;
-    //new
     private float gameTime;
     private bool popupShown = false;
-    private float hintBubbleDuration = 10f;
+    private float hintBubbleDuration = 5f;
     private float hintTimer = 0f;
     private bool hintActive = false;
     private bool waitingForUserToPressDone = false;
@@ -55,7 +54,6 @@ public class GameManager : MonoBehaviour
             gameTime = Time.time - startTime; // Keep track of game time
         }
 
-        // Hint bubble logic
         if (hintActive)
         {
             hintTimer += Time.deltaTime;
@@ -67,13 +65,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        //if (waitingForUserToPressDone && !hintActive)
-        //{
-        //    if (Time.time - startTime >= hintBubbleDuration)
-        //    {
-        //        ShowHintBubble("Press the Done button to complete the level.");
-        //    }
-        //}
+ 
 
         if (waitingForUserToPressDone && !hintActive)
         {
@@ -82,41 +74,8 @@ public class GameManager : MonoBehaviour
                 ShowHintBubble("Press the Done button to complete the level.");
             }
         }
-
-        // new
-        //if (hintActive)
-        //{
-        //    hintTimer += Time.deltaTime;
-        //    if (hintTimer >= hintBubbleDuration)
-        //    {
-        //        hintBubble.SetActive(false);
-        //        hintActive = false;
-        //        hintTimer = 0f;
-        //    }
-        //}
-
-        //if (waitingForUserToPressDone && !hintActive)
-        //{
-        //    if (Time.time - startTime >= hintBubbleDuration)
-        //    {
-        //        ShowHintBubble("Press the Done button to complete the level.");
-        //    }
-        //}
     }
 
-    //public void IncreaseScore(int amount)
-    //{
-    //    booksFound += amount;
-    //    booksFoundText.text = "Books Found: " + booksFound + "/3";
-
-    //    if (booksFound >= booksInLevel)  // Assuming 3 is the total number of books needed to complete the level **************************************
-    //    {
-    //        levelCompleted = true;
-    //        ShowLevelCompletionPopup();
-    //        //new
-    //        startTime = Time.time;
-    //    }
-    //}
 
     public void IncreaseScore(int amount)
     {
@@ -132,65 +91,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-    //private void ShowLevelCompletionPopup()
-    //{
-    //    //levelCompleted = true;
-    //    if (levelCompleted)
-    //    {
-    //        popupPanel.SetActive(true);  // Show the popup panel
-
-    //        // Display final score and time
-    //        scoreText.text = "Level Completed!";
-    //        float finalTime = Time.time - startTime;
-    //        timeText.text = $"Time: " + finalTime + " seconds";
-
-    //        // Add button listeners
-    //        nextLevelButton.onClick.AddListener(LoadNextLevel);
-    //        mainMenuButton.onClick.AddListener(LoadMainMenu);
-    //        selectLevelButton.onClick.AddListener(LoadLevelSelect);
-    //    }
-    //}
-
-    ////new
-    //private void ShowHintBubble(string message)
-    //{
-    //    hintBubble.SetActive(true);
-    //    hintBubbleText.text = message; // Set the hint text dynamically
-    //    hintActive = true;
-    //    hintTimer = 0f; // Reset hint timer
-    //}
-
-    ////new
-    //private void OnDoneButtonPressed()
-    //{
-    //    if (!levelCompleted)
-    //    {
-    //        ShowHintBubble("Find all books before completing the level.");
-    //    }
-    //    else
-    //    {
-    //        waitingForUserToPressDone = false;
-    //        ShowLevelCompletionPopup();
-    //    }
-    //}
-
     private void ShowLevelCompletionPopup()
     {
         popupPanel.SetActive(true);
-        doneButton.interactable = false; // Disable the Done button to prevent further presses
+        doneButton.interactable = false; // Disable the Done button 
         popupShown = true;
 
         float finalTime = Time.time - startTime;
-        //timeText.text = $"Time: " + finalTime + " seconds";
-        timeText.text = $"Time: {gameTime:F2} seconds";
+        timeText.text = $"Time: {gameTime:F2} seconds"; // Display stopped time with 2 decimal places
 
         nextLevelButton.onClick.AddListener(LoadNextLevel);
         mainMenuButton.onClick.AddListener(LoadMainMenu);
         selectLevelButton.onClick.AddListener(LoadLevelSelect);
     }
 
-    private void ShowHintBubble(string message)
+    public void ShowHintBubble(string message)
     {
         hintBubble.SetActive(true);
         hintBubbleText.text = message;

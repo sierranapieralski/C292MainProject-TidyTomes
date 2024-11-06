@@ -45,6 +45,12 @@ public class Outline : MonoBehaviour
                 collision.gameObject.transform.position = transform.position;
                 GameManager.instance.IncreaseScore(1);
             }
+
+            else
+            {
+                // Incorrect placement: Show hint bubble
+                GameManager.instance.ShowHintBubble("Book must be placed in the correct outline in the correct orientation.");
+            }
         }
     }
 }
