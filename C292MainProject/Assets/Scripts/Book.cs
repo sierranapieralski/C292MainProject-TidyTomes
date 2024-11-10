@@ -5,6 +5,9 @@ using UnityEngine.UIElements;
 
 public class Book : MonoBehaviour
 {
+    [SerializeField] private int startingRotation; // Set to 0, 90, 180, or 270 in the Inspector to match initial Z rotation
+    private int targetRotation;  // Target rotation to match the outline
+    private int rotationState;
 
     [SerializeField] GameObject moveBook;
     Vector3 initialPosition;
@@ -23,14 +26,16 @@ public class Book : MonoBehaviour
     float fallTimer = 0f; // timer to track the fall time of the book
 
 
-    int rotationState = 0;  // tracks degrees of rotation of book (0, 90, 180, 270)
+    // int rotationState = 0;  // tracks degrees of rotation of book (0, 90, 180, 270)
 
 
     // Start is called before the first frame update
     void Start()
     {
-        initialPosition = transform.position;
-        initialRotation = transform.eulerAngles; // saves the initial rotation of each book
+        //initialPosition = transform.position;
+        //initialRotation = transform.eulerAngles; // saves the initial rotation of each book
+
+        rotationState = startingRotation;
     }
 
     // Update is called once per frame
@@ -68,6 +73,11 @@ public class Book : MonoBehaviour
             }
         }
 
+    }
+
+    public void SetTargetRotation(int rotation)
+    {
+        targetRotation = rotation;
     }
 
     private void RotateBook(int angle)
@@ -111,6 +121,9 @@ public class Book : MonoBehaviour
         shouldFall = false;
         isSnapped = true;
         fallTimer = 0f;  // stop any ongoing fall and reset the timer
+
+        // Snap the book to the target rotation when placed correctly
+        //transform.rotation = Quaternion.Euler(0, 0, targetRotation);
 
     }
 

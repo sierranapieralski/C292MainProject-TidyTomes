@@ -3,6 +3,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -41,9 +42,30 @@ public class GameManager : MonoBehaviour
         startTime = Time.time;
         popupPanel.SetActive(false);  // Hide the popup panel initially
 
-        //new
         hintBubble.SetActive(false); // Hide the hint bubble initially
         doneButton.onClick.AddListener(OnDoneButtonPressed);
+
+
+        // setting things up for the start of each level
+        booksFound = 0;
+        popupShown = false;
+        levelCompleted = false;
+        waitingForUserToPressDone = false;
+        hintTimer = 0f;
+        hintActive = false;
+        booksFoundText.text = "Books Found: 0/" + booksInLevel;
+
+        
+        // instruction hint popup at the begining of the different levels
+        if (SceneManager.GetActiveScene().name == "Level1")
+        {
+            ShowHintBubble("Drag and drop the books into the correct outlines to complete the level.");
+        }
+        else if (SceneManager.GetActiveScene().name == "Level2")
+        {
+            ShowHintBubble("You can also rotate the books with the arrow keys to place them correctly.");
+        }
+
     }
 
     void Update()
@@ -97,9 +119,10 @@ public class GameManager : MonoBehaviour
         doneButton.interactable = false; // Disable the Done button 
         popupShown = true;
 
-        float finalTime = Time.time - startTime;
+        //float finalTime = Time.time - startTime;
         timeText.text = $"Time: {gameTime:F2} seconds"; // Display stopped time with 2 decimal places
 
+        nextLevelButton.onClick.RemoveAllListeners();   // clears any listeners from previous levels
         nextLevelButton.onClick.AddListener(LoadNextLevel);
         mainMenuButton.onClick.AddListener(LoadMainMenu);
         selectLevelButton.onClick.AddListener(LoadLevelSelect);
@@ -130,6 +153,7 @@ public class GameManager : MonoBehaviour
     private void LoadNextLevel()
     {
         Debug.Log("Next Level button clicked.");
+        SceneManager.LoadScene("Level2");
     }
 
 
