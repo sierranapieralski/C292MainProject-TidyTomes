@@ -59,11 +59,11 @@ public class GameManager : MonoBehaviour
         // instruction hint popup at the begining of the different levels
         if (SceneManager.GetActiveScene().name == "Level1")
         {
-            ShowHintBubble("Drag and drop the books into the correct outlines to complete the level.");
+            ShowHintBubble("Drag and drop the books into the correct outlines to complete the level");
         }
         else if (SceneManager.GetActiveScene().name == "Level2")
         {
-            ShowHintBubble("You can also rotate the books with the arrow keys to place them correctly.");
+            ShowHintBubble("You can also rotate the books with the arrow keys to place them correctly!");
         }
 
     }
