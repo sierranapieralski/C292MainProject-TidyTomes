@@ -3,45 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+
 public class Book : MonoBehaviour
 {
     [SerializeField] private int startingRotation; // Set to 0, 90, 180, or 270 in the Inspector to match initial Z rotation
-    private int targetRotation;  // Target rotation to match the outline
     private int rotationState;
-
-    [SerializeField] GameObject moveBook;
-    Vector3 initialPosition;
-    Vector3 initialRotation;
+    private Vector3 initialPosition;
+    private Vector3 initialRotation; 
 
     public string color;
 
-    bool isDragging = false;    // make public method and when is we drag to outline, then have book snap to correct position
-    [SerializeField] bool isDraggable = false;
+    private bool isDragging = false;  // make public method and when is we drag to outline, then have book snap to correct position
+    [SerializeField] private bool isDraggable = false;
 
+    private bool shouldFall = false;
+    private bool isSnapped = false;
+    private float fallSpeed = 5f;
+    private float fallTime = 2f;  // Time in seconds for the book to fall before respawning
+    private float fallTimer = 0f; // Timer to track the fall time of the book
 
-    bool shouldFall = false;
-    bool isSnapped = false;
-    float fallSpeed = 5f; 
-    float fallTime = 2f;  // time in seconds for the book to fall before respawning
-    float fallTimer = 0f; // timer to track the fall time of the book
-
-
-    // int rotationState = 0;  // tracks degrees of rotation of book (0, 90, 180, 270)
-
-
-    // Start is called before the first frame update
     void Start()
     {
-        //initialPosition = transform.position;
-        //initialRotation = transform.eulerAngles; // saves the initial rotation of each book
+        // Save the initial position and rotation at the start
+        initialPosition = transform.position;
+        initialRotation = transform.eulerAngles;
 
         rotationState = startingRotation;
     }
 
-    // Update is called once per frame
     void Update()
     {
-
         if (isDragging)
         {
             if (Input.GetKeyDown(KeyCode.RightArrow)) // Rotate 90 degrees clockwise
@@ -62,22 +53,12 @@ public class Book : MonoBehaviour
             transform.position += Vector3.down * fallSpeed * Time.deltaTime;
             fallTimer += Time.deltaTime;
 
+           
             if (fallTimer >= fallTime)
             {
-                shouldFall = false;
-                fallTimer = 0f;
-                transform.position = initialPosition;
-                transform.rotation = Quaternion.Euler(initialRotation);  // Reset rotation using Euler angles
-                rotationState = 0;  // resets rotation state if book respawns
-                isDraggable = true;
+                RespawnBook();
             }
         }
-
-    }
-
-    public void SetTargetRotation(int rotation)
-    {
-        targetRotation = rotation;
     }
 
     private void RotateBook(int angle)
@@ -86,10 +67,9 @@ public class Book : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, rotationState);
     }
 
-
     private void OnMouseDown()
     {
-       if (isDraggable)
+        if (isDraggable)
         {
             isDragging = true;
         }
@@ -99,32 +79,40 @@ public class Book : MonoBehaviour
     {
         isDragging = false;
 
-        if (!isSnapped)     
+        if (!isSnapped)
         {
-            shouldFall = true;
-            fallTimer = 0f;  // reset the timer when the fall starts
+            shouldFall = true; // Start the falling process
+            fallTimer = 0f;  // Reset the fall timer
         }
+    }
+
+    public void snapBook()
+    {
+        // Stop dragging and disable falling
+        isDragging = false;
+        isDraggable = false;
+
+        shouldFall = false;
+        isSnapped = true;
+        fallTimer = 0f; // Reset the fall timer
+    }
+
+    private void RespawnBook()
+    {
+        // Reset books position and rotation
+        transform.position = initialPosition;
+        transform.rotation = Quaternion.Euler(initialRotation);
+
+        // Reset books state
+        rotationState = startingRotation;
+        shouldFall = false;
+        fallTimer = 0f;
+        isDraggable = true;
+        isSnapped = false;
     }
 
     public int GetRotationState()
     {
         return rotationState;
     }
-
-    public void snapBook() 
-    {
-        // stops being dragged by the mouse and is draggable false
-        isDragging = false;
-        isDraggable = false;
-
-
-        shouldFall = false;
-        isSnapped = true;
-        fallTimer = 0f;  // stop any ongoing fall and reset the timer
-
-        // Snap the book to the target rotation when placed correctly
-        //transform.rotation = Quaternion.Euler(0, 0, targetRotation);
-
-    }
-
 }

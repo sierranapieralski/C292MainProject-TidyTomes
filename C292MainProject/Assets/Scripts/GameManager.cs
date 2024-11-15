@@ -165,6 +165,7 @@ public class GameManager : MonoBehaviour
     private void LoadMainMenu()
     {
         Debug.Log("Main Menu button clicked.");
+        SceneManager.LoadScene("TitleScreen");
     }
 }
 

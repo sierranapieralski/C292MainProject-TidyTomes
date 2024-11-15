@@ -46,16 +46,6 @@ public class Outline : MonoBehaviour
                 GameManager.instance.IncreaseScore(1);
             }
 
-            // Check if the book color and rotation match the outline's requirements
-            //if (book.color == color && book.GetRotationState() == requiredRotation)
-            //{
-            //    book.SetTargetRotation(requiredRotation);
-            //    book.snapBook();
-            //    collision.gameObject.transform.position = transform.position;
-
-            //    GameManager.instance.IncreaseScore(1);
-            //}
-
             else
             {
                 // Incorrect placement: Show hint bubble
