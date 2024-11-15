@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Button doneButton; 
     [SerializeField] private GameObject hintBubble;
     [SerializeField] private TextMeshProUGUI hintBubbleText;
+    [SerializeField] private LevelSelectManager levelSelectManager;
 
     private int booksFound = 0;
     private float startTime;
@@ -160,6 +161,8 @@ public class GameManager : MonoBehaviour
     private void LoadLevelSelect()
     {
         Debug.Log("Select Level button clicked.");
+        popupPanel.SetActive(false);
+        levelSelectManager.ShowLevelSelectPanel();
     }
 
     private void LoadMainMenu()
