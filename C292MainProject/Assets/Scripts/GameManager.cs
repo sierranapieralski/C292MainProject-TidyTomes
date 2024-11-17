@@ -67,7 +67,6 @@ public class GameManager : MonoBehaviour
         bonusFoundText.text = "Bonus Points: 0/" + booksInLevel;
 
 
-
         // instruction hint popup at the begining of the different levels
         if (SceneManager.GetActiveScene().name == "Level1")
         {
@@ -76,6 +75,10 @@ public class GameManager : MonoBehaviour
         else if (SceneManager.GetActiveScene().name == "Level2")
         {
             ShowHintBubble("You can also rotate the books with the arrow keys to place them correctly!");
+        }
+        else if (SceneManager.GetActiveScene().name == "Level3")
+        {
+            ShowHintBubble("Combine all your skills to complete Level 3!");
         }
 
     }
@@ -162,10 +165,30 @@ public class GameManager : MonoBehaviour
     }
 
 
+    //private void LoadNextLevel()
+    //{
+    //    Debug.Log("Next Level button clicked.");
+    //    SceneManager.LoadScene("Level2");
+    //}
+
     private void LoadNextLevel()
     {
-        Debug.Log("Next Level button clicked.");
-        SceneManager.LoadScene("Level2");
+        string currentSceneName = SceneManager.GetActiveScene().name;
+
+        if (currentSceneName == "Level1")
+        {
+            Debug.Log("Loading Level 2...");
+            SceneManager.LoadScene("Level2");
+        }
+        else if (currentSceneName == "Level2")
+        {
+            Debug.Log("Loading Level 3...");
+            SceneManager.LoadScene("Level3");
+        }
+        else
+        {
+            Debug.Log("No more levels available.");
+        }
     }
 
 
