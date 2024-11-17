@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour
         booksFoundText.text = "Books Found: 0/" + booksInLevel;
         //new
         bonusFound = 0;
-        bonusFoundText.text = "Bonus Points: 0/" + booksInLevel;
+        bonusFoundText.text = "Bonus Points: 0/" + bonusInLevel;
 
 
         // instruction hint popup at the begining of the different levels
@@ -165,12 +165,6 @@ public class GameManager : MonoBehaviour
     }
 
 
-    //private void LoadNextLevel()
-    //{
-    //    Debug.Log("Next Level button clicked.");
-    //    SceneManager.LoadScene("Level2");
-    //}
-
     private void LoadNextLevel()
     {
         string currentSceneName = SceneManager.GetActiveScene().name;
@@ -202,7 +196,7 @@ public class GameManager : MonoBehaviour
     private void LoadMainMenu()
     {
         Debug.Log("Main Menu button clicked.");
-        SceneManager.LoadScene("TitleScreen");
+        SceneManager.LoadScene("Titlesceen");
     }
 
     // new
