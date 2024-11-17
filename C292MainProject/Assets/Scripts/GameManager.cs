@@ -21,6 +21,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject hintBubble;
     [SerializeField] private TextMeshProUGUI hintBubbleText;
     [SerializeField] private LevelSelectManager levelSelectManager;
+    // new
+    [SerializeField] private TextMeshProUGUI bonusFoundText;
+    [SerializeField] private int bonusInLevel;
+
+
 
     private int booksFound = 0;
     private float startTime;
@@ -32,6 +37,8 @@ public class GameManager : MonoBehaviour
     private bool hintActive = false;
     private bool waitingForUserToPressDone = false;
     private float lastBookPlacedTime;
+    // new
+    private int bonusFound = 0;
 
     private void Awake()
     {
@@ -55,8 +62,12 @@ public class GameManager : MonoBehaviour
         hintTimer = 0f;
         hintActive = false;
         booksFoundText.text = "Books Found: 0/" + booksInLevel;
+        //new
+        bonusFound = 0;
+        bonusFoundText.text = "Bonus Points: 0/" + booksInLevel;
 
-        
+
+
         // instruction hint popup at the begining of the different levels
         if (SceneManager.GetActiveScene().name == "Level1")
         {
@@ -169,6 +180,13 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Main Menu button clicked.");
         SceneManager.LoadScene("TitleScreen");
+    }
+
+    // new
+    public void AddBonusPoint(int amount)
+    {
+        bonusFound += amount;
+        bonusFoundText.text = "Bonus Points: " + bonusFound + "/" + bonusInLevel;
     }
 }
 

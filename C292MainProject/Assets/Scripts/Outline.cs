@@ -43,7 +43,17 @@ public class Outline : MonoBehaviour
 
                 // move book to correct position
                 collision.gameObject.transform.position = transform.position;
-                GameManager.instance.IncreaseScore(1);
+
+                // Check if this is a bonus item
+                if (book.color == "plant1" || book.color == "plant2" || book.color == "lamp")
+                {
+                    GameManager.instance.AddBonusPoint(1); // Regular decor point addition
+                }
+                else
+                {
+                    // Increase book score
+                    GameManager.instance.IncreaseScore(1);
+                }
             }
 
             else
