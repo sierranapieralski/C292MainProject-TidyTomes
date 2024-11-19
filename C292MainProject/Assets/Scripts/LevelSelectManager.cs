@@ -21,6 +21,7 @@ public class LevelSelectManager : MonoBehaviour
         level1Button.onClick.AddListener(() => LoadLevel("Level1"));
         level2Button.onClick.AddListener(() => LoadLevel("Level2"));
         level3Button.onClick.AddListener(() => LoadLevel("Level3"));
+        level4Button.onClick.AddListener(() => LoadLevel("Level4"));
 
         // Assign a listener to the close button to hide the panel
         //closeButton.onClick.AddListener(HideLevelSelectPanel);

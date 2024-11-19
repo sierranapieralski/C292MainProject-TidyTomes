@@ -179,6 +179,11 @@ public class GameManager : MonoBehaviour
             Debug.Log("Loading Level 3...");
             SceneManager.LoadScene("Level3");
         }
+        else if (currentSceneName == "Level3")
+        {
+            Debug.Log("Loading Level 4...");
+            SceneManager.LoadScene("Level4");
+        }
         else
         {
             Debug.Log("No more levels available.");
