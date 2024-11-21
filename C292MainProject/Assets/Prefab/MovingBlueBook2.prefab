@@ -144,5 +144,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingRotation: 0
-  color: 
-  isDraggable: 0
+  color: blue2
+  isDraggable: 1
