@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -21,11 +22,20 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject hintBubble;
     [SerializeField] private TextMeshProUGUI hintBubbleText;
     [SerializeField] private LevelSelectManager levelSelectManager;
-    // new
     [SerializeField] private TextMeshProUGUI bonusFoundText;
     [SerializeField] private int bonusInLevel;
+    //new
+    [SerializeField] private GameObject gameCompletionPopup;
+    [SerializeField] private TextMeshProUGUI completionTimeText;
+    [SerializeField] private TextMeshProUGUI totalBonusText;
+    [SerializeField] private Button playAgainButton;
+    [SerializeField] private Button backToMainMenuButton;
 
 
+    // new
+    private List<float> levelCompletionTimes = new List<float>();
+    private int currentLevelIndex;
+    private float levelStartTime;
 
     private int booksFound = 0;
     private float startTime;
@@ -37,8 +47,8 @@ public class GameManager : MonoBehaviour
     private bool hintActive = false;
     private bool waitingForUserToPressDone = false;
     private float lastBookPlacedTime;
-    // new
     private int bonusFound = 0;
+
 
     private void Awake()
     {
@@ -53,6 +63,16 @@ public class GameManager : MonoBehaviour
         hintBubble.SetActive(false); // Hide the hint bubble initially
         doneButton.onClick.AddListener(OnDoneButtonPressed);
 
+        
+        // new
+        if (gameCompletionPopup != null)
+        {
+            gameCompletionPopup.SetActive(false);
+        }
+
+        levelStartTime = Time.time; // Record start time of current level
+        currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
+
 
         // setting things up for the start of each level
         booksFound = 0;
@@ -62,23 +82,41 @@ public class GameManager : MonoBehaviour
         hintTimer = 0f;
         hintActive = false;
         booksFoundText.text = "Books Found: 0/" + booksInLevel;
-        //new
-        bonusFound = 0;
-        bonusFoundText.text = "Bonus Points: 0/" + bonusInLevel;
+
+        if (bonusInLevel > 0)
+        {
+            bonusFound = 0;
+            bonusFoundText.text = "Bonus Points: 0/" + bonusInLevel;
+        }
 
 
-        // instruction hint popup at the begining of the different levels
+        //// instruction hint popup at the begining of the different levels
+        //if (SceneManager.GetActiveScene().name == "Level1")
+        //{
+        //    ShowHintBubble("Drag and drop the books into the correct outlines to complete the level");
+        //}
+        //else if (SceneManager.GetActiveScene().name == "Level2")
+        //{
+        //    ShowHintBubble("You can also rotate the books with the arrow keys to place them correctly!");
+        //}
+        //else if (SceneManager.GetActiveScene().name == "Level3")
+        //{
+        //    ShowHintBubble("Look out for bonus items, they will fit into the empty spots in the shelf!");
+        //}
         if (SceneManager.GetActiveScene().name == "Level1")
         {
+            Debug.Log("Showing Level 1 Hint");
             ShowHintBubble("Drag and drop the books into the correct outlines to complete the level");
         }
         else if (SceneManager.GetActiveScene().name == "Level2")
         {
+            Debug.Log("Showing Level 2 Hint");
             ShowHintBubble("You can also rotate the books with the arrow keys to place them correctly!");
         }
         else if (SceneManager.GetActiveScene().name == "Level3")
         {
-            ShowHintBubble("Combine all your skills to complete Level 3!");
+            Debug.Log("Showing Level 3 Hint");
+            ShowHintBubble("Look out for bonus items, they will fit into the empty spots in the shelf!");
         }
 
     }
@@ -122,11 +160,14 @@ public class GameManager : MonoBehaviour
         if (booksFound >= booksInLevel) // Check if all books are placed
         {
             levelCompleted = true;
+            float completionTime = Time.time - levelStartTime; // Calculate completion time
+            levelCompletionTimes.Add(completionTime); // Add to completion times list
             waitingForUserToPressDone = true;
             lastBookPlacedTime = Time.time;
             timeText.text = $"Time: {gameTime:F2} seconds"; // Display stopped time with 2 decimal places
         }
     }
+
 
     private void ShowLevelCompletionPopup()
     {
@@ -134,14 +175,37 @@ public class GameManager : MonoBehaviour
         doneButton.interactable = false; // Disable the Done button 
         popupShown = true;
 
-        //float finalTime = Time.time - startTime;
         timeText.text = $"Time: {gameTime:F2} seconds"; // Display stopped time with 2 decimal places
 
-        nextLevelButton.onClick.RemoveAllListeners();   // clears any listeners from previous levels
+        if (bonusInLevel > 0)
+        {
+            totalBonusText.gameObject.SetActive(true); // Ensure the bonus text is visible
+            totalBonusText.text = $"Bonus Points Found: {bonusFound}/{bonusInLevel}";
+        }
+
+        nextLevelButton.onClick.RemoveAllListeners();   
         nextLevelButton.onClick.AddListener(LoadNextLevel);
+
         mainMenuButton.onClick.AddListener(LoadMainMenu);
         selectLevelButton.onClick.AddListener(LoadLevelSelect);
     }
+
+    private void ShowGameCompletionPopup()
+    {
+        gameCompletionPopup.SetActive(true);
+        doneButton.interactable = false;
+
+        completionTimeText.text = $"Time: {gameTime:F2} seconds";
+
+        totalBonusText.text = $"Total Bonus Points: {bonusFound}/{bonusInLevel}";
+
+        playAgainButton.onClick.RemoveAllListeners();
+        playAgainButton.onClick.AddListener(RestartGame);
+
+        backToMainMenuButton.onClick.RemoveAllListeners();
+        backToMainMenuButton.onClick.AddListener(LoadMainMenu);
+    }
+
 
     public void ShowHintBubble(string message)
     {
@@ -151,16 +215,26 @@ public class GameManager : MonoBehaviour
         hintTimer = 0f;
     }
 
+
     private void OnDoneButtonPressed()
     {
         if (!levelCompleted)
         {
             ShowHintBubble("Find all books before completing the level.");
         }
-        else if (!popupShown) // Check if the popup has already been shown
+        else if (!popupShown) 
         {
             waitingForUserToPressDone = false;
-            ShowLevelCompletionPopup();
+            popupShown = true;
+
+            if (IsFinalLevel()) 
+            {
+                ShowGameCompletionPopup();
+            }
+            else 
+            {
+                ShowLevelCompletionPopup();
+            }
         }
     }
 
@@ -209,12 +283,27 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("Titlesceen");
     }
 
-    // new
+   
     public void AddBonusPoint(int amount)
     {
         bonusFound += amount;
         bonusFoundText.text = "Bonus Points: " + bonusFound + "/" + bonusInLevel;
     }
+
+
+    private bool IsFinalLevel()
+    {
+        return currentLevelIndex == 5;
+    }
+
+
+    private void RestartGame()
+    {
+        levelCompletionTimes.Clear();
+        SceneManager.LoadScene("Level1");
+    }
+
+
 }
 
 
