@@ -10,7 +10,6 @@ public class LevelSelectManager : MonoBehaviour
     [SerializeField] private Button level3Button;
     [SerializeField] private Button level4Button;
     [SerializeField] private Button level5Button;
-    //[SerializeField] private Button closeButton;
 
     private void Start()
     {
@@ -23,9 +22,6 @@ public class LevelSelectManager : MonoBehaviour
         level3Button.onClick.AddListener(() => LoadLevel("Level3"));
         level4Button.onClick.AddListener(() => LoadLevel("Level4"));
         level5Button.onClick.AddListener(() => LoadLevel("Level5"));
-
-        // Assign a listener to the close button to hide the panel
-        //closeButton.onClick.AddListener(HideLevelSelectPanel);
     }
 
     public void ShowLevelSelectPanel()

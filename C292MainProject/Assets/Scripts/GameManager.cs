@@ -24,18 +24,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private LevelSelectManager levelSelectManager;
     [SerializeField] private TextMeshProUGUI bonusFoundText;
     [SerializeField] private int bonusInLevel;
-    //new
     [SerializeField] private GameObject gameCompletionPopup;
     [SerializeField] private TextMeshProUGUI completionTimeText;
     [SerializeField] private TextMeshProUGUI totalBonusText;
     [SerializeField] private Button playAgainButton;
     [SerializeField] private Button backToMainMenuButton;
 
-
-    // new
-    private List<float> levelCompletionTimes = new List<float>();
-    private int currentLevelIndex;
-    private float levelStartTime;
 
     private int booksFound = 0;
     private float startTime;
@@ -48,6 +42,8 @@ public class GameManager : MonoBehaviour
     private bool waitingForUserToPressDone = false;
     private float lastBookPlacedTime;
     private int bonusFound = 0;
+    private int currentLevelIndex;
+    private float levelStartTime;
 
 
     private void Awake()
@@ -64,7 +60,6 @@ public class GameManager : MonoBehaviour
         doneButton.onClick.AddListener(OnDoneButtonPressed);
 
         
-        // new
         if (gameCompletionPopup != null)
         {
             gameCompletionPopup.SetActive(false);
@@ -90,32 +85,17 @@ public class GameManager : MonoBehaviour
         }
 
 
-        //// instruction hint popup at the begining of the different levels
-        //if (SceneManager.GetActiveScene().name == "Level1")
-        //{
-        //    ShowHintBubble("Drag and drop the books into the correct outlines to complete the level");
-        //}
-        //else if (SceneManager.GetActiveScene().name == "Level2")
-        //{
-        //    ShowHintBubble("You can also rotate the books with the arrow keys to place them correctly!");
-        //}
-        //else if (SceneManager.GetActiveScene().name == "Level3")
-        //{
-        //    ShowHintBubble("Look out for bonus items, they will fit into the empty spots in the shelf!");
-        //}
+        // instruction hint popup at the begining of the different levels to provide useful information to the player
         if (SceneManager.GetActiveScene().name == "Level1")
         {
-            Debug.Log("Showing Level 1 Hint");
             ShowHintBubble("Drag and drop the books into the correct outlines to complete the level");
         }
         else if (SceneManager.GetActiveScene().name == "Level2")
         {
-            Debug.Log("Showing Level 2 Hint");
             ShowHintBubble("You can also rotate the books with the arrow keys to place them correctly!");
         }
         else if (SceneManager.GetActiveScene().name == "Level3")
         {
-            Debug.Log("Showing Level 3 Hint");
             ShowHintBubble("Look out for bonus items, they will fit into the empty spots in the shelf!");
         }
 
@@ -152,6 +132,7 @@ public class GameManager : MonoBehaviour
     }
 
 
+    // Keeps track of the number of books found and increments the score after each book has been correctly placed
     public void IncreaseScore(int amount)
     {
         booksFound += amount;
@@ -160,26 +141,26 @@ public class GameManager : MonoBehaviour
         if (booksFound >= booksInLevel) // Check if all books are placed
         {
             levelCompleted = true;
-            float completionTime = Time.time - levelStartTime; // Calculate completion time
-            levelCompletionTimes.Add(completionTime); // Add to completion times list
+            float completionTime = Time.time - levelStartTime; 
             waitingForUserToPressDone = true;
             lastBookPlacedTime = Time.time;
             timeText.text = $"Time: {gameTime:F2} seconds"; // Display stopped time with 2 decimal places
         }
     }
 
-
+    // After levels 1-4 are completed, this pop up appears showing the time it took the user to complete the level (and bonus points found of applicable the level
+    // as well as a way to navigate to the next level, go back to the main level, or select a different level to navigate to
     private void ShowLevelCompletionPopup()
     {
         popupPanel.SetActive(true);
-        doneButton.interactable = false; // Disable the Done button 
+        doneButton.interactable = false; 
         popupShown = true;
 
         timeText.text = $"Time: {gameTime:F2} seconds"; // Display stopped time with 2 decimal places
 
         if (bonusInLevel > 0)
         {
-            totalBonusText.gameObject.SetActive(true); // Ensure the bonus text is visible
+            totalBonusText.gameObject.SetActive(true);
             totalBonusText.text = $"Bonus Points Found: {bonusFound}/{bonusInLevel}";
         }
 
@@ -190,6 +171,7 @@ public class GameManager : MonoBehaviour
         selectLevelButton.onClick.AddListener(LoadLevelSelect);
     }
 
+    // This pop up appears after the final level letting the user know that they have completed the game along with the their stats from level 5
     private void ShowGameCompletionPopup()
     {
         gameCompletionPopup.SetActive(true);
@@ -206,7 +188,7 @@ public class GameManager : MonoBehaviour
         backToMainMenuButton.onClick.AddListener(LoadMainMenu);
     }
 
-
+    // Makes the hint bubble visible when called and sets the message within the hint bubble to message
     public void ShowHintBubble(string message)
     {
         hintBubble.SetActive(true);
@@ -215,7 +197,8 @@ public class GameManager : MonoBehaviour
         hintTimer = 0f;
     }
 
-
+    // When the user completes the level by pressing the done button, this method eithernotifies the user that not all books are found so the level is not yet
+    // completed or shows them the completion popup
     private void OnDoneButtonPressed()
     {
         if (!levelCompleted)
@@ -238,7 +221,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
+    // When the user presses the next button, this code takes them to the next level depending on what their current level is
     private void LoadNextLevel()
     {
         string currentSceneName = SceneManager.GetActiveScene().name;
@@ -269,7 +252,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
+    // When the user presses the select button, the select popup appears
     private void LoadLevelSelect()
     {
         Debug.Log("Select Level button clicked.");
@@ -277,33 +260,31 @@ public class GameManager : MonoBehaviour
         levelSelectManager.ShowLevelSelectPanel();
     }
 
+    // When the user presses the main menu button, the main/title screen appears
     private void LoadMainMenu()
     {
         Debug.Log("Main Menu button clicked.");
         SceneManager.LoadScene("Titlesceen");
     }
 
-   
+   // This code keeps track of bonus points found in the level
     public void AddBonusPoint(int amount)
     {
         bonusFound += amount;
         bonusFoundText.text = "Bonus Points: " + bonusFound + "/" + bonusInLevel;
     }
 
-
     private bool IsFinalLevel()
     {
         return currentLevelIndex == 5;
     }
 
-
+    // This code takes the user back to level 1 if they select the play again? button after level 5
     private void RestartGame()
     {
-        levelCompletionTimes.Clear();
+        //levelCompletionTimes.Clear();
         SceneManager.LoadScene("Level1");
     }
-
-
 }
 
 

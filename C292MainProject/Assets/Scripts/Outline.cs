@@ -9,30 +9,15 @@ public class Outline : MonoBehaviour
     [SerializeField] GameManager manager;
     [SerializeField] int requiredRotation;  // Set this to 0, 90, 180, or 270 to match the outline's orientation
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    // This code handles the collision of a book and its outline and only snaps it in the correct position if the book matches the outline, is the correct color,
+    // and is in the corect rotation. 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log("Collision detected with: " + collision.gameObject.name);
         if (collision.gameObject.tag == "MoveBook")
         {
-            Debug.Log("is a book!");
-
-
+          
             var book = collision.gameObject.GetComponent<Book>();
-
-
             Debug.Log("current rotation " + book.GetRotationState());
 
             // checks if book color and rotation matched the outlines color and rotation

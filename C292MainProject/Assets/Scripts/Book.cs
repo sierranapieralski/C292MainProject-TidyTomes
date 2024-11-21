@@ -61,6 +61,7 @@ public class Book : MonoBehaviour
         }
     }
 
+    // This code keeps track of the books rotation state and rotates the book
     private void RotateBook(int angle)
     {
         rotationState = (rotationState + angle + 360) % 360; // Keep within 0, 90, 180, 270
@@ -75,6 +76,7 @@ public class Book : MonoBehaviour
         }
     }
 
+    // When the user releases the book (or object), it will fall if it hasnt been placed correctly
     private void OnMouseUp()
     {
         isDragging = false;
@@ -86,6 +88,7 @@ public class Book : MonoBehaviour
         }
     }
 
+    // This code snaps the book into the outline if the outline and book overlap/intersect on the screen (placing the book in the correct place)
     public void snapBook()
     {
         // Stop dragging and disable falling
@@ -97,6 +100,7 @@ public class Book : MonoBehaviour
         fallTimer = 0f; // Reset the fall timer
     }
 
+    // This code respawns the book in its original position and original rotation if it hs fallen off the front of the screen
     private void RespawnBook()
     {
         // Reset books position and rotation
